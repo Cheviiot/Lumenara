@@ -10,8 +10,13 @@ architectures=('amd64' 'arm64')
 
 license=('MIT')
 
-deps=('libc6' 'libgtk-3-0' 'libnotify4' 'libnss3' 'libxss1' 'libxtst6' 'xdg-utils')
+deps=()
 deps_debian=('libc6' 'libgtk-3-0' 'libnotify4' 'libnss3' 'libxss1' 'libxtst6' 'xdg-utils' 'libsecret-1-0')
+deps_ubuntu=('libc6' 'libgtk-3-0' 'libnotify4' 'libnss3' 'libxss1' 'libxtst6' 'xdg-utils' 'libsecret-1-0')
+deps_fedora=('glibc' 'gtk3' 'libnotify' 'nss' 'libXScrnSaver' 'libXtst' 'xdg-utils' 'libsecret')
+deps_arch=('glibc' 'gtk3' 'libnotify' 'nss' 'libxss' 'libxtst' 'xdg-utils' 'libsecret')
+deps_opensuse=('glibc' 'gtk3' 'libnotify4' 'mozilla-nss' 'libXScrnSaver1' 'libXtst6' 'xdg-utils' 'libsecret-1-0')
+deps_altlinux=('glibc' 'libgtk+3' 'libnotify' 'libnss' 'libXScrnSaver' 'libXtst' 'xdg-utils' 'libsecret')
 
 sources=(
     "https://github.com/pol-rivero/github-desktop-plus/releases/download/v${version}/GitHubDesktopPlus-v${version}-linux-x86_64.deb?~archive=false&~name=github-desktop-plus.deb"

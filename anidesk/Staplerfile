@@ -1,0 +1,77 @@
+name='anidesk'
+version='0.0.1.beta.6'
+release=1
+summary='AniDesk — Anixart Desktop Client'
+summary_ru='AniDesk — десктоп-клиент Anixart'
+group='Video'
+desc='AniDesk is an unofficial Anixart desktop client for watching anime with Anime4K support.'
+desc_ru='AniDesk — неофициальный десктоп-клиент Anixart для просмотра аниме с поддержкой Anime4K.'
+homepage='https://github.com/theDesConnet/AniDesk'
+maintainer='theDesConnet <https://github.com/theDesConnet>'
+
+architectures=('amd64')
+
+license=('GPL-2.0')
+
+# auto_req отключен - Electron-приложение с bundled библиотеками
+auto_reqprov_method="dirty"
+auto_req=0
+auto_prov=0
+
+deps=()
+deps_debian=('libc6' 'libgtk-3-0' 'libnotify4' 'libnss3' 'libxss1' 'libxtst6' 'xdg-utils' 'libsecret-1-0')
+deps_ubuntu=('libc6' 'libgtk-3-0' 'libnotify4' 'libnss3' 'libxss1' 'libxtst6' 'xdg-utils' 'libsecret-1-0')
+deps_fedora=('glibc' 'gtk3' 'libnotify' 'nss' 'libXScrnSaver' 'libXtst' 'xdg-utils' 'libsecret')
+deps_arch=('glibc' 'gtk3' 'libnotify' 'nss' 'libxss' 'libxtst' 'xdg-utils' 'libsecret')
+deps_opensuse=('glibc' 'gtk3' 'libnotify4' 'mozilla-nss' 'libXScrnSaver1' 'libXtst6' 'xdg-utils' 'libsecret-1-0')
+deps_altlinux=('glibc' 'libgtk+3' 'libnotify' 'libnss' 'libXScrnSaver' 'libXtst' 'xdg-utils' 'libsecret')
+
+sources=(
+    "https://github.com/theDesConnet/AniDesk/releases/download/v0.0.1-beta.6/anidesk-0.0.1-beta.6-linux-x64.tar.gz"
+    "https://raw.githubusercontent.com/theDesConnet/AniDesk/main/public/assets/icons/anidesk-icon.png"
+)
+
+checksums=('SKIP' 'SKIP')
+
+scripts=(
+    ['postinstall']='postinstall.sh'
+    ['postremove']='postremove.sh'
+)
+
+package() {
+    cd "${srcdir}"
+
+    mkdir -p "${pkgdir}/opt/anidesk"
+    # Копируем всё кроме иконки (она устанавливается отдельно)
+    for f in *; do
+        [ "$f" = "anidesk-icon.png" ] && continue
+        cp -a "$f" "${pkgdir}/opt/anidesk/"
+    done
+
+    mkdir -p "${pkgdir}/usr/bin"
+    ln -s /opt/anidesk/anidesk "${pkgdir}/usr/bin/anidesk"
+
+    mkdir -p "${pkgdir}/usr/share/applications"
+    cat > "${pkgdir}/usr/share/applications/anidesk.desktop" << 'EOF'
+[Desktop Entry]
+Name=AniDesk
+Comment=Unofficial Anixart Desktop Client
+Exec=/opt/anidesk/anidesk %U
+Icon=anidesk
+Type=Application
+Categories=AudioVideo;Video;
+StartupWMClass=anidesk
+EOF
+
+    # Иконка
+    mkdir -p "${pkgdir}/usr/share/icons/hicolor/256x256/apps"
+    cp anidesk-icon.png "${pkgdir}/usr/share/icons/hicolor/256x256/apps/anidesk.png"
+}
+
+files() {
+    files-find \
+        "/opt/anidesk/**/*" \
+        "/usr/bin/anidesk" \
+        "/usr/share/applications/anidesk.desktop" \
+        "/usr/share/icons/hicolor/256x256/apps/anidesk.png"
+}

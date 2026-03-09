@@ -1,0 +1,97 @@
+name='aya'
+version='1.14.2'
+release=1
+summary='AYA — Android ADB desktop app'
+summary_ru='AYA — приложение для управления Android устройствами'
+group='Development/Tools'
+desc='AYA is a desktop application for easily controlling Android devices via ADB. Features include screen mirror, file explorer, application manager, process monitor, layout inspector, CPU/memory/FPS monitor, logcat viewer and interactive shell.'
+desc_ru='AYA — приложение для управления Android устройствами через ADB. Включает зеркалирование экрана, файловый менеджер, менеджер приложений, мониторинг процессов, инспектор layout, мониторинг CPU/памяти/FPS, просмотр logcat и интерактивную оболочку.'
+homepage='https://aya.liriliri.io/'
+maintainer='surunzi <https://github.com/liriliri>'
+
+architectures=('amd64')
+
+license=('AGPL-3.0')
+
+deps=()
+deps_debian=('libgtk-3-0' 'libnotify4' 'libnss3' 'libxss1' 'libxtst6' 'xdg-utils' 'libatspi2.0-0' 'libuuid1' 'libsecret-1-0' 'android-tools-adb')
+deps_ubuntu=('libgtk-3-0' 'libnotify4' 'libnss3' 'libxss1' 'libxtst6' 'xdg-utils' 'libatspi2.0-0' 'libuuid1' 'libsecret-1-0' 'android-tools-adb')
+deps_fedora=('gtk3' 'libnotify' 'nss' 'libXScrnSaver' 'libXtst' 'xdg-utils' 'at-spi2-core' 'libuuid' 'libsecret' 'android-tools')
+deps_arch=('gtk3' 'libnotify' 'nss' 'libxss' 'libxtst' 'xdg-utils' 'at-spi2-core' 'util-linux-libs' 'libsecret' 'android-tools')
+deps_opensuse=('libgtk-3-0' 'libnotify4' 'mozilla-nss' 'libXss1' 'libXtst6' 'xdg-utils' 'at-spi2-core' 'libuuid1' 'libsecret-1-0' 'android-tools')
+deps_altlinux=('libgtk+3' 'libnotify' 'libnss' 'libXScrnSaver' 'libXtst' 'xdg-utils' 'at-spi2-core' 'libuuid' 'libsecret' 'android-tools')
+
+auto_reqprov_method="dirty"
+auto_req=0
+auto_prov=0
+
+sources=(
+    "https://github.com/liriliri/aya/releases/download/v${version}/AYA-${version}-linux-x86_64.AppImage?~archive=false&~name=aya.AppImage"
+)
+
+checksums=('SKIP')
+
+scripts=(
+    ['postinstall']='postinstall.sh'
+    ['postremove']='postremove.sh'
+)
+
+package() {
+    cd "${srcdir}"
+
+    # Делаем AppImage исполняемым и извлекаем
+    chmod +x aya.AppImage
+    ./aya.AppImage --appimage-extract
+
+    # Создаём директории
+    install -dm755 "${pkgdir}/opt/aya"
+    install -dm755 "${pkgdir}/usr/bin"
+    install -dm755 "${pkgdir}/usr/share/applications"
+    install -dm755 "${pkgdir}/usr/share/icons/hicolor/512x512/apps"
+
+    # Копируем содержимое
+    cp -r squashfs-root/* "${pkgdir}/opt/aya/"
+
+    # Создаём симлинк
+    ln -sf /opt/aya/aya "${pkgdir}/usr/bin/aya"
+
+    # Копируем иконку
+    if [[ -f "${pkgdir}/opt/aya/resources/app/dist/renderer/icon/icon.png" ]]; then
+        install -Dm644 "${pkgdir}/opt/aya/resources/app/dist/renderer/icon/icon.png" \
+            "${pkgdir}/usr/share/icons/hicolor/512x512/apps/aya.png"
+    elif [[ -f "${pkgdir}/opt/aya/usr/share/icons/hicolor/512x512/apps/aya.png" ]]; then
+        cp "${pkgdir}/opt/aya/usr/share/icons/hicolor/512x512/apps/aya.png" \
+            "${pkgdir}/usr/share/icons/hicolor/512x512/apps/aya.png"
+    fi
+
+    # Создаём .desktop файл
+    cat > "${pkgdir}/usr/share/applications/aya.desktop" << EOF
+[Desktop Entry]
+Name=AYA
+Comment=Android ADB Desktop App
+GenericName=Android Device Manager
+Exec=/opt/aya/aya %U
+Icon=aya
+Type=Application
+StartupNotify=true
+Categories=Development;Utility;
+Keywords=android;adb;device;manager;
+EOF
+
+    # Устанавливаем права
+    chmod 755 "${pkgdir}/opt/aya/aya"
+    chmod 4755 "${pkgdir}/opt/aya/chrome-sandbox" 2>/dev/null || true
+
+    # Удаляем ненужные файлы AppImage
+    rm -f "${pkgdir}/opt/aya/AppRun"
+    rm -f "${pkgdir}/opt/aya/*.desktop"
+    rm -rf "${pkgdir}/opt/aya/usr"
+}
+
+files() {
+    files-find \
+        "/opt/aya/**/*" \
+        "/usr/bin/aya" \
+        "/usr/share/applications/aya.desktop" \
+        "/usr/share/icons/hicolor/*/apps/aya.png"
+}

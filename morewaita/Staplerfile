@@ -1,0 +1,54 @@
+name='morewaita'
+version='49'
+release=1
+summary='Adwaita-styled companion icon theme for GNOME'
+summary_ru='Расширенная тема иконок в стиле Adwaita для GNOME'
+group='Graphical desktop/GNOME'
+desc='MoreWaita is an expanded Adwaita-styled companion icon theme with extra icons for popular apps and MIME types to complement GNOME Shell original icons.'
+desc_ru='MoreWaita — расширенная тема иконок в стиле Adwaita с дополнительными иконками для популярных приложений и MIME-типов, дополняющая оригинальные иконки GNOME Shell.'
+homepage='https://github.com/somepaulo/MoreWaita'
+maintainer='somepaulo <https://github.com/somepaulo>'
+
+architectures=('all')
+
+license=('GPL-3.0-or-later')
+
+deps=()
+deps_debian=('hicolor-icon-theme')
+deps_ubuntu=('hicolor-icon-theme')
+deps_fedora=('hicolor-icon-theme')
+deps_arch=('hicolor-icon-theme')
+deps_opensuse=('hicolor-icon-theme')
+deps_altlinux=('icon-theme-hicolor')
+
+sources=(
+    "https://github.com/somepaulo/MoreWaita/archive/refs/tags/v${version}.tar.gz"
+)
+
+checksums=('SKIP')
+
+scripts=(
+    ['postinstall']='postinstall.sh'
+    ['postremove']='postremove.sh'
+)
+
+package() {
+    cd "${srcdir}/MoreWaita-${version}"
+    
+    # Устанавливаем тему иконок
+    install -dm755 "${pkgdir}/usr/share/icons/MoreWaita"
+    
+    # Копируем основные файлы
+    cp -r scalable "${pkgdir}/usr/share/icons/MoreWaita/"
+    cp -r symbolic "${pkgdir}/usr/share/icons/MoreWaita/"
+    install -Dm644 index.theme "${pkgdir}/usr/share/icons/MoreWaita/index.theme"
+    
+    # Лицензия
+    install -Dm644 LICENSE "${pkgdir}/usr/share/licenses/${name}/LICENSE"
+}
+
+files() {
+    files-find \
+        "/usr/share/icons/MoreWaita/**/*" \
+        "/usr/share/licenses/morewaita/LICENSE"
+}

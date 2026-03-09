@@ -1,0 +1,65 @@
+name='gitkraken'
+version='11.10.0'
+release=1
+summary='GitKraken Desktop — Git GUI Client'
+summary_ru='GitKraken Desktop — графический клиент для Git'
+group='Development/Tools'
+desc='GitKraken Desktop is a cross-platform Git GUI client with visual commit graph, merge conflict editor, and integrations with GitHub, GitLab, Bitbucket, and Azure DevOps.'
+desc_ru='GitKraken Desktop — кроссплатформенный графический клиент Git с визуальным графом коммитов, редактором конфликтов слияния и интеграциями с GitHub, GitLab, Bitbucket и Azure DevOps.'
+homepage='https://www.gitkraken.com/git-client'
+maintainer='Axosoft LLC DBA GitKraken <https://www.gitkraken.com>'
+
+architectures=('amd64' 'arm64')
+
+license=('custom')
+nonfree=1
+nonfree_url='https://www.gitkraken.com/eula'
+
+# auto_req отключен - Electron-приложение с bundled библиотеками
+auto_reqprov_method="dirty"
+auto_req=0
+auto_prov=0
+
+deps=()
+deps_debian=('libc6' 'libgtk-3-0' 'libnotify4' 'libnss3' 'libxss1' 'libxtst6' 'xdg-utils' 'libsecret-1-0' 'libcurl3-gnutls | libcurl3-nss | libcurl4' 'libxkbfile1' 'libgconf-2-4 | libglib2.0-0')
+deps_ubuntu=('libc6' 'libgtk-3-0' 'libnotify4' 'libnss3' 'libxss1' 'libxtst6' 'xdg-utils' 'libsecret-1-0' 'libcurl3-gnutls | libcurl3-nss | libcurl4' 'libxkbfile1' 'libgconf-2-4 | libglib2.0-0')
+deps_fedora=('glibc' 'gtk3' 'libnotify' 'nss' 'libXScrnSaver' 'libXtst' 'xdg-utils' 'libsecret' 'libcurl' 'libxkbfile')
+deps_arch=('glibc' 'gtk3' 'libnotify' 'nss' 'libxss' 'libxtst' 'xdg-utils' 'libsecret' 'curl' 'libxkbfile')
+deps_opensuse=('glibc' 'gtk3' 'libnotify4' 'mozilla-nss' 'libXScrnSaver1' 'libXtst6' 'xdg-utils' 'libsecret-1-0' 'libcurl4' 'libxkbfile1')
+deps_altlinux=('glibc' 'libgtk+3' 'libnotify' 'libnss' 'libXScrnSaver' 'libXtst' 'xdg-utils' 'libsecret' 'libcurl' 'libxkbfile')
+
+sources=(
+    "https://release.gitkraken.com/linux/gitkraken-amd64.deb?~archive=false&~name=gitkraken.deb"
+)
+
+sources_arm64=(
+    "https://release.gitkraken.com/linux/gitkraken-arm64.deb?~archive=false&~name=gitkraken.deb"
+)
+
+checksums=('SKIP')
+
+scripts=(
+    ['postinstall']='postinstall.sh'
+    ['postremove']='postremove.sh'
+)
+
+package() {
+    cd "${srcdir}"
+
+    mkdir -p "${srcdir}/extracted"
+    ar x gitkraken.deb
+    tar -xf data.tar.* -C "${srcdir}/extracted"
+
+    cp -a "${srcdir}/extracted/usr" "${pkgdir}/usr"
+}
+
+files() {
+    files-find \
+        "/usr/bin/gitkraken" \
+        "/usr/share/gitkraken/**/*" \
+        "/usr/share/applications/gitkraken.desktop" \
+        "/usr/share/applications/gitkraken-url-handler.desktop" \
+        "/usr/share/applications/gk-cli-url-handler.desktop" \
+        "/usr/share/doc/gitkraken/**/*" \
+        "/usr/share/pixmaps/gitkraken.png"
+}

@@ -1,0 +1,119 @@
+name='zavesa'
+version='0.1.0'
+release=1
+summary='Cheat Engine launcher for Steam/Proton games'
+summary_ru='Запуск Cheat Engine для Steam/Proton игр'
+group='Games'
+desc='Zavesa is a GTK4/libadwaita application for launching Cheat Engine in Steam games
+through Proton. Displays Steam library with cover art, one-click LaunchOptions setup
+for protonhax, and built-in Cheat Engine download and installation.'
+desc_ru='Zavesa — GTK4/libadwaita-приложение для запуска Cheat Engine в Steam-играх
+через Proton. Отображает библиотеку Steam с обложками, настройка LaunchOptions
+для protonhax одним кликом, встроенная загрузка и установка Cheat Engine.'
+homepage='https://github.com/Cheviiot/zavesa'
+maintainer='Cheviiot <cheviiot@example.com>'
+
+architectures=('all')
+
+license=('MIT')
+
+auto_reqprov_method="dirty"
+auto_req=0
+auto_prov=0
+
+deps=(
+    'python3'
+    'gtk4'
+    'libadwaita'
+)
+deps_debian=(
+    'python3'
+    'python3-gi'
+    'python3-requests'
+    'gir1.2-gtk-4.0'
+    'gir1.2-adw-1'
+)
+deps_ubuntu=("${deps_debian[@]}")
+deps_fedora=(
+    'python3'
+    'python3-gobject'
+    'python3-requests'
+    'gtk4'
+    'libadwaita'
+)
+deps_arch=(
+    'python'
+    'python-gobject'
+    'python-requests'
+    'gtk4'
+    'libadwaita'
+)
+deps_altlinux=(
+    'python3'
+    'python3-module-pygobject3'
+    'python3-module-requests'
+    'libgtk4'
+    'libadwaita'
+)
+deps_opensuse=(
+    'python3'
+    'python3-gobject'
+    'python3-requests'
+    'gtk4'
+    'libadwaita'
+)
+
+sources=(
+    "https://github.com/Cheviiot/zavesa/archive/refs/tags/v${version}.tar.gz"
+)
+checksums=('SKIP')
+
+scripts=(
+    ['postinstall']='postinstall.sh'
+    ['postremove']='postremove.sh'
+)
+
+appstream_app_id='io.github.zavesa'
+
+package() {
+    # GitHub создаёт архив с именем zavesa-<version>
+    src="${srcdir}/zavesa-${version}"
+
+    # Python модуль
+    install -dm755 "${pkgdir}/usr/lib/zavesa"
+    cp -r "${src}/src/zavesa" "${pkgdir}/usr/lib/zavesa/"
+    find "${pkgdir}/usr/lib/zavesa" -type d -name "__pycache__" -exec rm -rf {} + 2>/dev/null || true
+
+    # Лаунчер
+    install -Dm755 "${src}/zavesa" "${pkgdir}/usr/bin/zavesa"
+
+    # Обновляем путь в лаунчере: указываем на установленное расположение
+    sed -i 's|sys.path.insert(0, str(Path(__file__).resolve().parent / "src"))|sys.path.insert(0, "/usr/lib/zavesa")|' \
+        "${pkgdir}/usr/bin/zavesa"
+    # Убираем pycache_prefix — не нужна для установленной версии
+    sed -i '/pycache_prefix/d' "${pkgdir}/usr/bin/zavesa"
+
+    # Desktop файл
+    install-desktop "${src}/data/io.github.zavesa.desktop"
+
+    # Иконка
+    install -Dm644 "${src}/data/icons/hicolor/256x256/apps/io.github.zavesa.png" \
+        "${pkgdir}/usr/share/icons/hicolor/256x256/apps/io.github.zavesa.png"
+
+    # AppStream metainfo
+    install -Dm644 "${src}/data/io.github.zavesa.metainfo.xml" \
+        "${pkgdir}/usr/share/metainfo/io.github.zavesa.metainfo.xml"
+
+    # Лицензия
+    install -Dm644 "${src}/LICENSE" "${pkgdir}/usr/share/licenses/${name}/LICENSE"
+}
+
+files() {
+    files-find \
+        "/usr/bin/zavesa" \
+        "/usr/lib/zavesa/zavesa/**/*" \
+        "/usr/share/applications/io.github.zavesa.desktop" \
+        "/usr/share/icons/hicolor/256x256/apps/io.github.zavesa.png" \
+        "/usr/share/metainfo/io.github.zavesa.metainfo.xml" \
+        "/usr/share/licenses/zavesa/LICENSE"
+}

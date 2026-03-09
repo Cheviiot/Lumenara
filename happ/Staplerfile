@@ -1,0 +1,79 @@
+name='happ'
+version='2.4.0'
+release=1
+summary='Happ Proxy Client — GUI for xray-core'
+summary_ru='Happ Proxy Client — GUI для xray-core'
+group='Networking/Other'
+desc='Happ is a graphical client for xray-core with TUN/VPN support, anti-censorship and subscription management.'
+desc_ru='Happ — графический клиент для xray-core с поддержкой TUN/VPN, anti-censorship и управлением подписками.'
+homepage='https://github.com/Happ-proxy/happ-desktop'
+maintainer='FlyFrog LLC <support@happ.su>'
+
+architectures=('amd64' 'arm64')
+
+license=('custom')
+nonfree=1
+nonfree_url='https://happ.su/license'
+
+# auto_req отключен - Electron-приложение с bundled библиотеками
+auto_reqprov_method="dirty"
+auto_req=0
+auto_prov=0
+
+deps=()
+deps_debian=('libc6' 'libssl3 | libssl3t64')
+deps_ubuntu=('libc6' 'libssl3 | libssl3t64')
+deps_fedora=('glibc' 'openssl-libs')
+deps_arch=('glibc' 'openssl')
+deps_opensuse=('glibc' 'libopenssl1_1')
+deps_altlinux=('glibc' 'libssl3')
+
+sources=(
+    "https://github.com/Happ-proxy/happ-desktop/releases/download/${version}/Happ.linux.x64.deb?~archive=false&~name=happ.deb"
+)
+
+sources_arm64=(
+    "https://github.com/Happ-proxy/happ-desktop/releases/download/${version}/Happ.linux.arm64.deb?~archive=false&~name=happ.deb"
+)
+
+checksums=('SKIP')
+
+scripts=(
+    ['postinstall']='postinstall.sh'
+    ['postremove']='postremove.sh'
+)
+
+package() {
+    cd "${srcdir}"
+
+    mkdir -p "${srcdir}/happ-extracted"
+    ar x happ.deb
+    tar -xf data.tar.* -C "${srcdir}/happ-extracted"
+
+    cp -a "${srcdir}/happ-extracted/opt" "${pkgdir}/opt"
+
+    install -Dm644 "${srcdir}/happ-extracted/etc/systemd/system/happd.service" \
+        "${pkgdir}/etc/systemd/system/happd.service"
+
+    install -Dm644 "${srcdir}/happ-extracted/usr/share/applications/Happ.desktop" \
+        "${pkgdir}/usr/share/applications/Happ.desktop"
+
+    install -Dm644 "${srcdir}/happ-extracted/usr/share/icons/hicolor/256x256/apps/happ.png" \
+        "${pkgdir}/usr/share/icons/hicolor/256x256/apps/happ.png"
+
+    install -Dm644 "${srcdir}/happ-extracted/usr/share/mime/packages/happ-mime.xml" \
+        "${pkgdir}/usr/share/mime/packages/happ-mime.xml"
+
+    mkdir -p "${pkgdir}/usr/bin"
+    ln -s /opt/happ/bin/Happ "${pkgdir}/usr/bin/happ"
+}
+
+files() {
+    files-find \
+        "/usr/bin/happ" \
+        "/opt/happ/**/*" \
+        "/etc/systemd/system/happd.service" \
+        "/usr/share/applications/Happ.desktop" \
+        "/usr/share/icons/hicolor/256x256/apps/happ.png" \
+        "/usr/share/mime/packages/happ-mime.xml"
+}

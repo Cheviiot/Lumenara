@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="200" viewBox="0 0 900 200">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1a1025"/>
+      <stop offset="50%" style="stop-color:#2d1b4e"/>
+      <stop offset="100%" style="stop-color:#1a1025"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#7C3AED"/>
+      <stop offset="100%" style="stop-color:#A78BFA"/>
+    </linearGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="3" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  <rect width="900" height="200" rx="12" fill="url(#bg)"/>
+  <!-- Decorative dots -->
+  <circle cx="80" cy="40" r="1.5" fill="#7C3AED" opacity="0.4"/>
+  <circle cx="150" cy="70" r="1" fill="#A78BFA" opacity="0.3"/>
+  <circle cx="750" cy="50" r="1.5" fill="#7C3AED" opacity="0.4"/>
+  <circle cx="820" cy="80" r="1" fill="#A78BFA" opacity="0.3"/>
+  <circle cx="200" cy="160" r="1" fill="#7C3AED" opacity="0.25"/>
+  <circle cx="700" cy="150" r="1.5" fill="#A78BFA" opacity="0.25"/>
+  <circle cx="120" cy="130" r="0.8" fill="#C4B5FD" opacity="0.2"/>
+  <circle cx="780" cy="130" r="0.8" fill="#C4B5FD" opacity="0.2"/>
+  <!-- Accent line -->
+  <rect x="0" y="196" width="900" height="4" rx="0" fill="url(#accent)"/>
+  <!-- Star icon -->
+  <g transform="translate(350, 75)" filter="url(#glow)">
+    <path d="M25 2 L31 18 L48 18 L34 28 L39 45 L25 35 L11 45 L16 28 L2 18 L19 18 Z" fill="url(#accent)" opacity="0.9"/>
+  </g>
+  <!-- Title -->
+  <text x="450" y="108" text-anchor="middle" font-family="'Segoe UI', system-ui, -apple-system, sans-serif" font-size="42" font-weight="700" fill="white" letter-spacing="2">Lumenara</text>
+  <!-- Subtitle -->
+  <text x="450" y="145" text-anchor="middle" font-family="'Segoe UI', system-ui, -apple-system, sans-serif" font-size="15" fill="#A78BFA" letter-spacing="4" font-weight="400">STAPLER REPOSITORY</text>
+</svg>

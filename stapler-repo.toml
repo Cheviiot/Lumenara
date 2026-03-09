@@ -1,0 +1,17 @@
+[repo]
+minVersion = "v0.0.29"
+
+# Git mirrors
+url = "https://github.com/Cheviiot/Lumenara.git"
+ref = "main"
+
+[repo.meta]
+report_url = "https://github.com/Cheviiot/Lumenara/issues"
+title = "Lumenara"
+homepage = "https://github.com/Cheviiot/Lumenara"
+
+summary = "Stapler-репозиторий с приложениями"
+
+description = """
+Lumenara — Stapler-репозиторий, содержащий сборочные скрипты
+для установки приложений через Stapler."""

@@ -1,0 +1,156 @@
+name='kitsune'
+version='0.8.2'
+release=1
+summary='Libadwaita client for watching anime from AniLiberty'
+summary_ru='Libadwaita-клиент для просмотра аниме от AniLiberty'
+group='Video'
+desc='Kitsune is a Libadwaita client for watching anime translated by the AniLiberty team.
+Browse the catalog, search for titles, and watch episodes with the built-in player.
+Features genre/franchise browsing, favorites, watch progress tracking, and offline caching.'
+desc_ru='Kitsune — Libadwaita-клиент для просмотра аниме от AniLiberty.
+Каталог релизов с фильтрами, поиск по названию, встроенный плеер с HLS,
+просмотр по жанрам и франшизам, избранное, отслеживание прогресса и кэширование.'
+homepage='https://altlinux.space/alt-gnome/Kitsune'
+maintainer='Semen Fomchenkov <armatik@altlinux.org>'
+
+architectures=('all')
+
+license=('GPL-3.0-or-later')
+
+auto_reqprov_method="dirty"
+auto_req=0
+auto_prov=0
+
+deps=()
+deps_altlinux=(
+    'python3'
+    'python3-module-pygobject3'
+    'python3-module-pycairo'
+    'libgtk4'
+    'libadwaita'
+    'gstreamer1.0'
+    'gst-plugins-base1.0'
+    'gst-plugins-bad1.0'
+    'libsoup3.0'
+    'blueprint-compiler'
+    'gst-plugin-gtk4'
+    'libwebp-pixbuf-loader'
+)
+deps_fedora=(
+    'python3'
+    'python3-gobject'
+    'python3-cairo'
+    'gtk4'
+    'libadwaita'
+    'gstreamer1'
+    'gstreamer1-plugins-base'
+    'gstreamer1-plugins-bad-free'
+    'libsoup3'
+)
+deps_arch=(
+    'python'
+    'python-gobject'
+    'python-cairo'
+    'gtk4'
+    'libadwaita'
+    'gstreamer'
+    'gst-plugins-base'
+    'gst-plugins-bad'
+    'libsoup3'
+)
+deps_debian=(
+    'python3'
+    'python3-gi'
+    'python3-gi-cairo'
+    'gir1.2-gtk-4.0'
+    'gir1.2-adw-1'
+    'gstreamer1.0-plugins-base'
+    'gstreamer1.0-plugins-bad'
+    'gir1.2-soup-3.0'
+)
+deps_ubuntu=("${deps_debian[@]}")
+deps_opensuse=(
+    'python3'
+    'python3-gobject'
+    'python3-cairo'
+    'gtk4'
+    'libadwaita'
+    'gstreamer'
+    'gstreamer-plugins-base'
+    'gstreamer-plugins-bad'
+    'libsoup3'
+)
+
+sources=(
+    "https://altlinux.space/api/v1/repos/alt-gnome/Kitsune/archive/${version}.tar.gz"
+)
+checksums=('SKIP')
+
+scripts=(
+    ['postinstall']='postinstall.sh'
+    ['postremove']='postremove.sh'
+)
+
+builddeps_altlinux=(
+    'meson'
+    'python3'
+    'python3-module-pycairo'
+    'blueprint-compiler'
+    'libgtk4-devel'
+    'libadwaita-devel'
+    'gettext'
+    'desktop-file-utils'
+    'libappstream-glib'
+    'glib2-devel'
+)
+
+appstream_app_id='net.armatik.Kitsune'
+
+build() {
+    cd "${srcdir}"
+
+    # Ищем распакованную директорию
+    src_top=$(find . -maxdepth 1 -type d -name "kitsune*" | head -1)
+    if [[ -n "$src_top" ]]; then
+        cd "$src_top"
+    fi
+
+    meson setup _build --prefix=/usr
+    meson compile -C _build
+}
+
+package() {
+    cd "${srcdir}"
+
+    src_top=$(find . -maxdepth 1 -type d -name "kitsune*" | head -1)
+    if [[ -n "$src_top" ]]; then
+        cd "$src_top"
+    fi
+
+    DESTDIR="${pkgdir}" meson install -C _build --no-rebuild
+
+    # Проверяем что иконка установилась
+    if [[ ! -f "${pkgdir}/usr/share/icons/hicolor/scalable/apps/net.armatik.Kitsune.svg" ]]; then
+        # Устанавливаем иконку вручную из исходников
+        install -Dm644 data/icons/hicolor/scalable/apps/net.armatik.Kitsune.svg \
+            "${pkgdir}/usr/share/icons/hicolor/scalable/apps/net.armatik.Kitsune.svg"
+    fi
+
+    # Проверяем символическую иконку
+    if [[ ! -f "${pkgdir}/usr/share/icons/hicolor/symbolic/apps/net.armatik.Kitsune-symbolic.svg" ]]; then
+        install -Dm644 data/icons/hicolor/symbolic/apps/net.armatik.Kitsune-symbolic.svg \
+            "${pkgdir}/usr/share/icons/hicolor/symbolic/apps/net.armatik.Kitsune-symbolic.svg" 2>/dev/null || true
+    fi
+}
+
+files() {
+    files-find \
+        "/usr/bin/kitsune" \
+        "/usr/share/kitsune/**/*" \
+        "/usr/share/applications/net.armatik.Kitsune.desktop" \
+        "/usr/share/icons/hicolor/*/apps/net.armatik.Kitsune*" \
+        "/usr/share/icons/hicolor/scalable/actions/net.armatik.Kitsune.*" \
+        "/usr/share/locale/*/LC_MESSAGES/kitsune.mo" \
+        "/usr/share/metainfo/net.armatik.Kitsune.metainfo.xml" \
+        "/usr/share/glib-2.0/schemas/net.armatik.Kitsune.gschema.xml"
+}

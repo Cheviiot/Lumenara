@@ -26,9 +26,10 @@ deps_altlinux=('glibc' 'libgtk+3' 'libnotify' 'libnss' 'libXScrnSaver' 'libXtst'
 
 sources=(
     "https://github.com/theDesConnet/AniDesk/releases/download/v0.0.1-beta.6/anidesk-0.0.1-beta.6-linux-x64.tar.gz"
+    "icon.ico::https://raw.githubusercontent.com/theDesConnet/AniDesk/main/icon/icon.ico"
 )
 
-checksums=('SKIP')
+checksums=('SKIP' 'SKIP')
 
 scripts=(
     ['postinstall']='postinstall.sh'
@@ -39,26 +40,31 @@ package() {
     cd "${srcdir}"
 
     mkdir -p "${pkgdir}/opt/anidesk"
-    cp -a anidesk-0.0.1-beta.6-linux-x64/* "${pkgdir}/opt/anidesk/"
+    # Копируем всё кроме icon.ico (он используется отдельно)
+    for f in *; do
+        [ "$f" = "icon.ico" ] && continue
+        cp -a "$f" "${pkgdir}/opt/anidesk/"
+    done
 
     mkdir -p "${pkgdir}/usr/bin"
-    ln -s /opt/anidesk/AniDesk "${pkgdir}/usr/bin/anidesk"
+    ln -s /opt/anidesk/anidesk "${pkgdir}/usr/bin/anidesk"
 
     mkdir -p "${pkgdir}/usr/share/applications"
     cat > "${pkgdir}/usr/share/applications/anidesk.desktop" << 'EOF'
 [Desktop Entry]
 Name=AniDesk
 Comment=Unofficial Anixart Desktop Client
-Exec=/opt/anidesk/AniDesk %U
+Exec=/opt/anidesk/anidesk %U
 Icon=anidesk
 Type=Application
 Categories=AudioVideo;Video;
-StartupWMClass=AniDesk
+StartupWMClass=anidesk
 EOF
 
+    # Иконка из .ico (извлекаем 256x256)
     mkdir -p "${pkgdir}/usr/share/icons/hicolor/256x256/apps"
-    if [ -f "${pkgdir}/opt/anidesk/resources/app/icon/256x256.png" ]; then
-        cp "${pkgdir}/opt/anidesk/resources/app/icon/256x256.png" "${pkgdir}/usr/share/icons/hicolor/256x256/apps/anidesk.png"
+    if command -v convert &>/dev/null && [ -f icon.ico ]; then
+        convert "icon.ico[0]" -resize 256x256 "${pkgdir}/usr/share/icons/hicolor/256x256/apps/anidesk.png" 2>/dev/null || true
     fi
 }
 
@@ -66,5 +72,5 @@ files() {
     echo '/opt/anidesk/'
     echo '/usr/bin/anidesk'
     echo '/usr/share/applications/anidesk.desktop'
-    echo '/usr/share/icons/hicolor/256x256/apps/anidesk.png'
+    [ -f "${pkgdir}/usr/share/icons/hicolor/256x256/apps/anidesk.png" ] && echo '/usr/share/icons/hicolor/256x256/apps/anidesk.png'
 }

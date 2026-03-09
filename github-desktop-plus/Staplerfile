@@ -1,0 +1,41 @@
+name='github-desktop-plus'
+version='3.5.5.13'
+release=1
+desc='GitHub Desktop Plus — форк GitHub Desktop с расширенной функциональностью и интеграцией Bitbucket/GitLab'
+summary='GitHub Desktop Plus — улучшенный GUI-клиент для Git'
+homepage='https://github.com/pol-rivero/github-desktop-plus'
+maintainer='pol-rivero <https://github.com/pol-rivero>'
+
+architectures=('amd64' 'arm64')
+
+license=('MIT')
+
+deps=('libc6' 'libgtk-3-0' 'libnotify4' 'libnss3' 'libxss1' 'libxtst6' 'xdg-utils')
+deps_debian=('libc6' 'libgtk-3-0' 'libnotify4' 'libnss3' 'libxss1' 'libxtst6' 'xdg-utils' 'libsecret-1-0')
+
+sources=(
+    "https://github.com/pol-rivero/github-desktop-plus/releases/download/v${version}/GitHubDesktopPlus-v${version}-linux-x86_64.deb?~archive=false&~name=github-desktop-plus.deb"
+)
+
+sources_arm64=(
+    "https://github.com/pol-rivero/github-desktop-plus/releases/download/v${version}/GitHubDesktopPlus-v${version}-linux-arm64.deb?~archive=false&~name=github-desktop-plus.deb"
+)
+
+checksums=('SKIP')
+
+scripts=(
+    ['postinstall']='postinstall.sh'
+    ['postremove']='postremove.sh'
+)
+
+package() {
+    cd "${srcdir}"
+
+    dpkg-deb -x github-desktop-plus.deb "${srcdir}/extracted"
+
+    cp -a "${srcdir}/extracted/usr" "${pkgdir}/usr"
+
+    if [ -d "${srcdir}/extracted/opt" ]; then
+        cp -a "${srcdir}/extracted/opt" "${pkgdir}/opt"
+    fi
+}

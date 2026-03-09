@@ -13,8 +13,9 @@ architectures=('amd64')
 
 license=('GPL-2.0')
 
-auto_req=1
-auto_prov=1
+# auto_req отключен - Electron-приложение с bundled библиотеками
+auto_req=0
+auto_prov=0
 
 deps=()
 deps_debian=('libc6' 'libgtk-3-0' 'libnotify4' 'libnss3' 'libxss1' 'libxtst6' 'xdg-utils' 'libsecret-1-0')

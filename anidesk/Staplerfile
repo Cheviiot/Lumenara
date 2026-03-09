@@ -26,7 +26,7 @@ deps_altlinux=('glibc' 'libgtk+3' 'libnotify' 'libnss' 'libXScrnSaver' 'libXtst'
 
 sources=(
     "https://github.com/theDesConnet/AniDesk/releases/download/v0.0.1-beta.6/anidesk-0.0.1-beta.6-linux-x64.tar.gz"
-    "icon.ico::https://raw.githubusercontent.com/theDesConnet/AniDesk/main/icon/icon.ico"
+    "https://raw.githubusercontent.com/theDesConnet/AniDesk/main/icon/icon.ico"
 )
 
 checksums=('SKIP' 'SKIP')

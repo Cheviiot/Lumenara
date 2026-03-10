@@ -1,4 +1,4 @@
-name='happ-desktop'
+name='happ'
 version='2.4.0'
 release=1
 summary='Happ Proxy Client — GUI for xray-core'

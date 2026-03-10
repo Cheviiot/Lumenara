@@ -1,0 +1,60 @@
+name='winboat'
+version='0.9.0'
+release=1
+summary='Run Windows apps on Linux with seamless integration'
+summary_ru='Запуск Windows-приложений на Linux с бесшовной интеграцией'
+group='Emulators'
+desc='Winboat allows you to run Windows applications on Linux with seamless desktop integration, using Wine under the hood.'
+desc_ru='Winboat позволяет запускать Windows-приложения на Linux с бесшовной интеграцией в рабочий стол, используя Wine.'
+homepage='https://github.com/TibixDev/winboat'
+maintainer='TibixDev <https://github.com/TibixDev>'
+
+architectures=('amd64')
+
+license=('MIT')
+
+auto_reqprov_method="dirty"
+auto_req=0
+auto_prov=0
+
+deps=()
+deps_debian=('libc6' 'libgtk-3-0' 'libnotify4' 'libnss3' 'libxss1' 'libxtst6' 'xdg-utils' 'wine')
+deps_ubuntu=('libc6' 'libgtk-3-0' 'libnotify4' 'libnss3' 'libxss1' 'libxtst6' 'xdg-utils' 'wine')
+deps_fedora=('glibc' 'gtk3' 'libnotify' 'nss' 'libXScrnSaver' 'libXtst' 'xdg-utils' 'wine')
+deps_arch=('glibc' 'gtk3' 'libnotify' 'nss' 'libxss' 'libxtst' 'xdg-utils' 'wine')
+deps_opensuse=('glibc' 'gtk3' 'libnotify4' 'mozilla-nss' 'libXScrnSaver1' 'libXtst6' 'xdg-utils' 'wine')
+deps_altlinux=('glibc' 'libgtk+3' 'libnotify' 'libnss' 'libXScrnSaver' 'libXtst' 'xdg-utils' 'wine')
+
+sources=(
+    "https://github.com/TibixDev/winboat/releases/download/v${version}/winboat-${version}-amd64.deb?~archive=false&~name=winboat.deb"
+)
+
+checksums=('SKIP')
+
+scripts=(
+    ['postinstall']='postinstall.sh'
+    ['postremove']='postremove.sh'
+)
+
+package() {
+    cd "${srcdir}"
+
+    mkdir -p "${srcdir}/extracted"
+    ar x winboat.deb
+    tar -xf data.tar.* -C "${srcdir}/extracted"
+
+    cp -a "${srcdir}/extracted/opt" "${pkgdir}/opt"
+    cp -a "${srcdir}/extracted/usr" "${pkgdir}/usr"
+    
+    # Симлинк для запуска из терминала
+    mkdir -p "${pkgdir}/usr/bin"
+    ln -s /opt/winboat/winboat "${pkgdir}/usr/bin/winboat"
+}
+
+files() {
+    files-find \
+        "/opt/winboat/**/*" \
+        "/usr/bin/winboat" \
+        "/usr/share/applications/winboat.desktop" \
+        "/usr/share/icons/hicolor/scalable/apps/winboat.svg"
+}

@@ -53,7 +53,7 @@ stplr install <имя_пакета>
 | Пакет | Версия | Описание | Лицензия |
 |:------|:------:|:---------|:--------:|
 | [**morewaita**](https://github.com/somepaulo/MoreWaita) | `49` | Расширенная тема иконок в стиле Adwaita для GNOME | GPL-3.0 |
-| [**adwyra**](https://github.com/cheviiot/adwyra) | `0.3.5` | Элегантный лаунчер приложений для Linux | GPL-3.0 |
+| [**adwyra**](https://github.com/cheviiot/adwyra) | `0.3.5` | Элегантный лаунчер приложений для Gnome | GPL-3.0 |
 
 ---
 

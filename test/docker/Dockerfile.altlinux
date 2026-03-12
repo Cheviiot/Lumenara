@@ -1,0 +1,19 @@
+FROM alt:p11
+
+# Установка базовых зависимостей
+RUN apt-get update && apt-get install -y \
+    wget \
+    ca-certificates \
+    cpio \
+    tar \
+    gzip \
+    xz \
+    && rm -rf /var/cache/apt/archives/*
+
+# stplr будет смонтирован с хоста через -v /usr/bin/stplr:/usr/local/bin/stplr:ro
+
+WORKDIR /build
+
+# Точка входа для тестирования сборки
+ENTRYPOINT ["/usr/local/bin/stplr"]
+CMD ["--help"]

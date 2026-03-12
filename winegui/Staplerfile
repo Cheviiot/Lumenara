@@ -1,0 +1,60 @@
+name='winegui'
+version='3.0.1'
+release=1
+summary='WineGUI — user-friendly Wine manager'
+summary_ru='WineGUI — удобный менеджер Wine'
+group='Emulators'
+desc='WineGUI is a user-friendly WINE manager with graphical interface. Create, manage and configure Wine bottles easily.'
+desc_ru='WineGUI — удобный менеджер WINE с графическим интерфейсом. Легко создавайте, управляйте и настраивайте бутылки Wine.'
+homepage='https://gitlab.melroy.org/melroy/winegui'
+maintainer='Melroy van den Berg <https://gitlab.melroy.org/melroy>'
+
+architectures=('amd64')
+
+license=('AGPL-3.0')
+
+deps=()
+deps_debian=('wine' 'cabextract' 'p7zip-full' 'unzip' 'wget' 'zenity' 'libgtkmm-4.0-0')
+deps_ubuntu=('wine' 'cabextract' 'p7zip-full' 'unzip' 'wget' 'zenity' 'libgtkmm-4.0-0')
+deps_fedora=('wine' 'cabextract' 'p7zip' 'unzip' 'wget' 'zenity' 'gtkmm4.0')
+deps_arch=('wine' 'cabextract' 'p7zip' 'unzip' 'wget' 'zenity' 'gtkmm-4.0')
+deps_opensuse=('wine' 'cabextract' 'p7zip-full' 'unzip' 'wget' 'zenity' 'gtkmm4')
+deps_altlinux=('wine' 'cabextract' 'p7zip' 'unzip' 'wget' 'zenity' 'libgtkmm4')
+
+auto_reqprov_method="dirty"
+auto_req=0
+auto_prov=0
+
+sources=(
+    "https://winegui.melroy.org/downloads/WineGUI-v${version}.rpm?~archive=false&~name=winegui.rpm"
+)
+
+checksums=('SKIP')
+
+scripts=(
+    ['postinstall']='postinstall.sh'
+    ['postremove']='postremove.sh'
+)
+
+package() {
+    cd "${srcdir}"
+
+    mkdir -p "${srcdir}/extracted"
+    rpm2cpio winegui.rpm | cpio -idmv -D "${srcdir}/extracted"
+
+    # Копируем файлы
+    cp -a "${srcdir}/extracted/usr" "${pkgdir}/usr"
+
+    # Лицензия
+    install -Dm644 "${srcdir}/extracted/usr/share/doc/winegui/copyright" "${pkgdir}/usr/share/licenses/${name}/LICENSE" 2>/dev/null || true
+}
+
+files() {
+    files-find \
+        "/usr/bin/winegui" \
+        "/usr/share/applications/*.desktop" \
+        "/usr/share/icons/hicolor/**/apps/*" \
+        "/usr/share/glib-2.0/schemas/*" \
+        "/usr/share/doc/winegui/**/*" \
+        "/usr/share/licenses/winegui/*"
+}

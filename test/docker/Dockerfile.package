@@ -1,0 +1,28 @@
+FROM alt:p11
+
+# Базовые зависимости для сборки
+RUN apt-get update && apt-get install -y \
+    cpio \
+    tar \
+    gzip \
+    xz \
+    git \
+    && rm -rf /var/cache/apt/archives/*
+
+# stplr будет смонтирован с хоста
+
+WORKDIR /build
+
+# Копируем файлы пакета
+COPY . /build/
+
+# Скрипт для тестирования
+RUN echo '#!/bin/bash' > /test.sh && \
+    echo 'set -e' >> /test.sh && \
+    echo 'echo "=== Testing package build ===" ' >> /test.sh && \
+    echo 'cd /build' >> /test.sh && \
+    echo '/usr/local/bin/stplr build -c 2>&1' >> /test.sh && \
+    echo 'echo "=== BUILD SUCCESS ===" ' >> /test.sh && \
+    chmod +x /test.sh
+
+CMD ["/test.sh"]

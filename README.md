@@ -5,7 +5,7 @@
 **Stapler-репозиторий с приложениями для Linux**
 
 [![Stapler](https://img.shields.io/badge/Stapler-репозиторий-blue?style=for-the-badge&logo=linux)](https://stplr.dev)
-[![Packages](https://img.shields.io/badge/пакетов-6-green?style=for-the-badge)](https://github.com/Cheviiot/Lumenara)
+[![Packages](https://img.shields.io/badge/пакетов-8-green?style=for-the-badge)](https://github.com/Cheviiot/Lumenara)
 [![License](https://img.shields.io/badge/license-Mixed-orange?style=for-the-badge)](https://github.com/Cheviiot/Lumenara)
 
 </div>
@@ -40,6 +40,13 @@ stplr install <имя_пакета>
 | Пакет | Версия | Описание | Лицензия |
 |:------|:------:|:---------|:--------:|
 | [**github-plus**](https://github.com/pol-rivero/github-desktop-plus) | `3.5.5.13` | Улучшенный GUI-клиент для Git с интеграцией Bitbucket/GitLab | MIT |
+| [**aya**](https://github.com/liriliri/aya) | `1.14.2` | Приложение для управления Android устройствами через ADB | AGPL-3.0 |
+
+### 🍷 Wine и эмуляция
+
+| Пакет | Версия | Описание | Лицензия |
+|:------|:------:|:---------|:--------:|
+| [**winegui**](https://gitlab.melroy.org/melroy/winegui) | `3.0.1` | Удобный GUI-менеджер Wine префиксов | AGPL-3.0 |
 
 ### 🎬 Медиа и развлечения
 

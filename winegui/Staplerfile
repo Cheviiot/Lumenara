@@ -44,17 +44,13 @@ package() {
 
     # Копируем файлы
     cp -a "${srcdir}/extracted/usr" "${pkgdir}/usr"
-
-    # Лицензия
-    install -Dm644 "${srcdir}/extracted/usr/share/doc/winegui/copyright" "${pkgdir}/usr/share/licenses/${name}/LICENSE" 2>/dev/null || true
 }
 
 files() {
     files-find \
         "/usr/bin/winegui" \
-        "/usr/share/applications/*.desktop" \
-        "/usr/share/icons/hicolor/**/apps/*" \
-        "/usr/share/glib-2.0/schemas/*" \
-        "/usr/share/doc/winegui/**/*" \
-        "/usr/share/licenses/winegui/*"
+        "/usr/share/applications/winegui.desktop" \
+        "/usr/share/icons/hicolor/**/apps/winegui.*" \
+        "/usr/share/glib-2.0/schemas/org.melroy.winegui.gschema.xml" \
+        "/usr/share/winegui/**/*"
 }

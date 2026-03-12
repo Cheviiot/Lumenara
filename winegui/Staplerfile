@@ -33,7 +33,7 @@ auto_req=0
 auto_prov=0
 
 sources=(
-    "https://gitlab.melroy.org/melroy/winegui/-/archive/v${version}/winegui-v${version}.tar.gz"
+    "https://github.com/winegui/WineGUI/archive/refs/tags/v${version}.tar.gz"
 )
 
 checksums=('SKIP')
@@ -44,14 +44,14 @@ scripts=(
 )
 
 prepare() {
-    cd "${srcdir}/winegui-v${version}"
+    cd "${srcdir}/WineGUI-${version}"
     
     # Создаём version.txt для сборки
     echo "${version}" > version.txt
 }
 
 build() {
-    cd "${srcdir}/winegui-v${version}"
+    cd "${srcdir}/WineGUI-${version}"
     
     cmake -GNinja -B build \
         -DCMAKE_BUILD_TYPE=Release \
@@ -63,7 +63,7 @@ build() {
 }
 
 package() {
-    cd "${srcdir}/winegui-v${version}"
+    cd "${srcdir}/WineGUI-${version}"
     
     DESTDIR="${pkgdir}" cmake --install ./build
     

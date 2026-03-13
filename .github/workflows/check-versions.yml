@@ -1,0 +1,94 @@
+name: Check Package Versions
+
+on:
+  # Ежедневная проверка в 6:00 UTC
+  schedule:
+    - cron: '0 6 * * *'
+  
+  # Ручной запуск
+  workflow_dispatch:
+    inputs:
+      package:
+        description: 'Конкретный пакет для проверки (или оставить пустым для всех)'
+        required: false
+        default: ''
+      auto_pr:
+        description: 'Создать PR автоматически'
+        type: boolean
+        default: true
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  check-versions:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y jq curl
+      
+      - name: Make script executable
+        run: chmod +x scripts/update-versions.sh
+      
+      - name: Check for updates (dry-run)
+        id: check
+        run: |
+          echo "## Version Check Results" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          
+          if [ -n "${{ github.event.inputs.package }}" ]; then
+            ./scripts/update-versions.sh -v -n "${{ github.event.inputs.package }}" 2>&1 | tee check-output.txt
+          else
+            ./scripts/update-versions.sh -v -n 2>&1 | tee check-output.txt
+          fi
+          
+          # Проверяем, есть ли обновления
+          if grep -q "\->" check-output.txt; then
+            echo "has_updates=true" >> $GITHUB_OUTPUT
+            echo "### 📦 Доступны обновления:" >> $GITHUB_STEP_SUMMARY
+            grep "\->" check-output.txt | sed 's/\x1b\[[0-9;]*m//g' >> $GITHUB_STEP_SUMMARY
+          else
+            echo "has_updates=false" >> $GITHUB_OUTPUT
+            echo "✅ Все пакеты актуальны" >> $GITHUB_STEP_SUMMARY
+          fi
+      
+      - name: Apply updates
+        if: steps.check.outputs.has_updates == 'true'
+        run: |
+          if [ -n "${{ github.event.inputs.package }}" ]; then
+            ./scripts/update-versions.sh -v "${{ github.event.inputs.package }}"
+          else
+            ./scripts/update-versions.sh -v
+          fi
+      
+      - name: Create Pull Request
+        if: steps.check.outputs.has_updates == 'true' && (github.event.inputs.auto_pr != 'false' || github.event_name == 'schedule')
+        uses: peter-evans/create-pull-request@v6
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: "chore: update package versions"
+          title: "🔄 Обновление версий пакетов"
+          body: |
+            ## Автоматическое обновление версий
+            
+            Скрипт обнаружил новые версии пакетов и автоматически обновил Staplerfile.
+            
+            ### Изменения
+            $(cat check-output.txt | grep "\->" | sed 's/\x1b\[[0-9;]*m//g')
+            
+            ---
+            *Это автоматически сгенерированный PR от GitHub Actions*
+          branch: auto-update/versions
+          delete-branch: true
+          labels: |
+            automated
+            dependencies

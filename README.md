@@ -39,7 +39,7 @@ stplr install <имя_пакета>
 
 | Пакет | Версия | Описание | Лицензия |
 |:------|:------:|:---------|:--------:|
-| [**github-plus**](https://github.com/pol-rivero/github-desktop-plus) | `3.5.5.13` | Улучшенный GUI-клиент для Git с интеграцией Bitbucket/GitLab | MIT |
+| [**github-plus**](https://github.com/pol-rivero/github-desktop-plus) | `3.5.7.0` | Улучшенный GUI-клиент для Git с интеграцией Bitbucket/GitLab | MIT |
 | [**aya**](https://github.com/liriliri/aya) | `1.14.2` | Приложение для управления Android устройствами через ADB | AGPL-3.0 |
 
 ###  Медиа и развлечения
@@ -54,7 +54,7 @@ stplr install <имя_пакета>
 | Пакет | Версия | Описание | Лицензия |
 |:------|:------:|:---------|:--------:|
 | [**morewaita**](https://github.com/somepaulo/MoreWaita) | `49` | Расширенная тема иконок в стиле Adwaita для GNOME | GPL-3.0 |
-| [**adwyra**](https://github.com/cheviiot/adwyra) | `0.3.5` | Элегантный лаунчер приложений для Gnome | GPL-3.0 |
+| [**adwyra**](https://github.com/cheviiot/adwyra) | `0.4.0` | Элегантный лаунчер приложений для Gnome | GPL-3.0 |
 
 ---
 
@@ -82,7 +82,30 @@ stplr search git
 
 ---
 
-## 🔧 Требования
+## � Автообновление версий
+
+Репозиторий автоматически проверяет новые версии пакетов через GitHub Actions:
+
+- **Ежедневная проверка** — workflow запускается каждый день в 6:00 UTC
+- **Ручной запуск** — можно запустить проверку в любое время через Actions
+- **Автоматические PR** — при обнаружении обновлений создаётся Pull Request
+
+### Локальное использование
+
+```bash
+# Проверить все пакеты (без изменений)
+./scripts/update-versions.sh -n
+
+# Обновить все пакеты
+./scripts/update-versions.sh
+
+# Обновить конкретный пакет
+./scripts/update-versions.sh happ
+```
+
+---
+
+## �🔧 Требования
 
 - [Stapler](https://stplr.dev) — универсальный менеджер пакетов для Linux
 - Поддерживаемые дистрибутивы: **ALT Linux**, **Fedora**, **Debian**, **Ubuntu**, **Arch Linux**, **openSUSE**

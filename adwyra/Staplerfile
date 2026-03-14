@@ -2,7 +2,7 @@
 # Staplerfile для Adwyra
 
 name='adwyra'
-version='0.4.0'
+version='0.5.0'
 release=1
 summary='Elegant application launcher for Linux'
 summary_ru='Элегантный лаунчер приложений для Linux'

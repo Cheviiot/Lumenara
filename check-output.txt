@@ -1,0 +1,27 @@
+[0;34m[INFO][0m Режим dry-run: изменения не будут применены
+
+[0;34m[INFO][0m Проверка версий пакетов...
+
+[0;34m[DEBUG][0m Проверка пакета: anidesk (theDesConnet/AniDesk)
+[0;34m[DEBUG][0m anidesk: текущая=0.0.1.beta.6, последняя=0.0.1.beta.6 (raw: v0.0.1-beta.6)
+[0;32m[OK][0m anidesk: актуальная версия (0.0.1.beta.6)
+[0;34m[DEBUG][0m Проверка пакета: github-plus (pol-rivero/github-desktop-plus)
+[0;34m[DEBUG][0m github-plus: текущая=3.5.7.0, последняя=3.5.7.0 (raw: v3.5.7.0)
+[0;32m[OK][0m github-plus: актуальная версия (3.5.7.0)
+[0;34m[DEBUG][0m Проверка пакета: morewaita (somepaulo/MoreWaita)
+[0;34m[DEBUG][0m morewaita: текущая=49, последняя=49 (raw: v49)
+[0;32m[OK][0m morewaita: актуальная версия (49)
+[0;34m[DEBUG][0m Проверка пакета: aya (liriliri/aya)
+[0;34m[DEBUG][0m aya: текущая=1.14.2, последняя=1.14.2 (raw: v1.14.2)
+[0;32m[OK][0m aya: актуальная версия (1.14.2)
+[0;34m[DEBUG][0m Проверка пакета: winboat (TibixDev/winboat)
+[0;34m[DEBUG][0m winboat: текущая=0.9.0, последняя=0.9.0 (raw: v0.9.0)
+[0;32m[OK][0m winboat: актуальная версия (0.9.0)
+[0;34m[DEBUG][0m Проверка пакета: adwyra (cheviiot/adwyra)
+[0;34m[DEBUG][0m adwyra: текущая=0.4.0, последняя=0.5.0 (raw: v0.5.0)
+[1;33m[WARN][0m adwyra: 0.4.0 -> 0.5.0
+[0;34m[INFO][0m [DRY-RUN] Обновил бы adwyra до версии 0.5.0
+[0;34m[DEBUG][0m Проверка пакета: happ (Happ-proxy/happ-desktop)
+[0;34m[DEBUG][0m happ: текущая=2.4.0, последняя=2.4.0 (raw: 2.4.0)
+[0;32m[OK][0m happ: актуальная версия (2.4.0)
+

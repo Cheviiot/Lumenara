@@ -53,7 +53,9 @@ stplr install <имя_пакета>
 
 | Пакет | Версия | Описание | Лицензия |
 |:------|:------:|:---------|:--------:|
-| [**steamcloudfilemanager**](https://github.com/Fldicoahkiin/SteamCloudFileManager) | `1.3.4` | GUI для управления Steam Cloud хранилищем | GPL-3.0 |
+| [**steamcloudfilemanager**](https://github.com/Fldicoahkiin/SteamCloudFileManager) | `1.3.4` | GUI для управления Steam Cloud хранилищем ¹ | GPL-3.0 |
+
+> ¹ Требует GLIBC 2.39+ (ALT p12/Sisyphus, Fedora 40+, Ubuntu 24.10+)
 
 ### 🎨 Персонализация
 

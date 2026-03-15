@@ -63,9 +63,9 @@ deps_opensuse=(
     'libxkbcommon0'
 )
 
-# Источники - используем tar.gz релиз
+# Источники - используем AppImage (самодостаточный, не зависит от GLIBC)
 sources=(
-    "https://github.com/Fldicoahkiin/SteamCloudFileManager/releases/download/v${version}/SteamCloudFileManager-${version}-linux-x86_64.tar.gz"
+    "https://github.com/Fldicoahkiin/SteamCloudFileManager/releases/download/v${version}/SteamCloudFileManager-${version}-linux-x86_64.AppImage"
 )
 checksums=(
     'SKIP'
@@ -77,26 +77,13 @@ appstream_app_id='io.github.fldicoahkiin.steamcloudfilemanager'
 package() {
     cd "${srcdir}"
     
-    # Ищем распакованную директорию или бинарник
-    extracted_dir=$(find . -maxdepth 1 -type d -name "SteamCloudFileManager*" | head -1)
-    
-    if [[ -n "$extracted_dir" ]]; then
-        cd "$extracted_dir"
-    fi
-    
-    # Устанавливаем бинарник и библиотеку в /usr/lib/steamcloudfilemanager
+    # Устанавливаем AppImage
     install -dm755 "${pkgdir}/usr/lib/steamcloudfilemanager"
-    install -Dm755 steam-cloud-file-manager "${pkgdir}/usr/lib/steamcloudfilemanager/steam-cloud-file-manager"
-    install -Dm644 libsteam_api.so "${pkgdir}/usr/lib/steamcloudfilemanager/libsteam_api.so"
+    install -Dm755 "SteamCloudFileManager-${version}-linux-x86_64.AppImage" "${pkgdir}/usr/lib/steamcloudfilemanager/steam-cloud-file-manager.AppImage"
     
-    # Создаём wrapper-скрипт
+    # Создаём симлинк в /usr/bin
     install -dm755 "${pkgdir}/usr/bin"
-    cat > "${pkgdir}/usr/bin/steam-cloud-file-manager" << 'WRAPPER'
-#!/bin/bash
-export LD_LIBRARY_PATH="/usr/lib/steamcloudfilemanager:$LD_LIBRARY_PATH"
-exec /usr/lib/steamcloudfilemanager/steam-cloud-file-manager "$@"
-WRAPPER
-    chmod 755 "${pkgdir}/usr/bin/steam-cloud-file-manager"
+    ln -s "/usr/lib/steamcloudfilemanager/steam-cloud-file-manager.AppImage" "${pkgdir}/usr/bin/steam-cloud-file-manager"
     
     # Создаём .desktop файл
     install -dm755 "${pkgdir}/usr/share/applications"
@@ -113,9 +100,4 @@ Type=Application
 Categories=Game;Utility;
 Keywords=steam;cloud;save;backup;sync;
 EOF
-
-    # Устанавливаем иконку если есть
-    if [[ -f "assets/steam_cloud.png" ]]; then
-        install -Dm644 "assets/steam_cloud.png" "${pkgdir}/usr/share/icons/hicolor/256x256/apps/steam-cloud-file-manager.png"
-    fi
 }

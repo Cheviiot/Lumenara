@@ -23,6 +23,7 @@ declare -A PACKAGE_REPOS=(
     ["winboat"]="TibixDev/winboat"
     ["morewaita"]="somepaulo/MoreWaita"
     ["adwyra"]="cheviiot/adwyra"
+    ["steamcloudfilemanager"]="Fldicoahkiin/SteamCloudFileManager"
 )
 
 # Специальные обработчики версий (для нестандартных форматов)
@@ -168,6 +169,36 @@ update_staplerfile_version() {
     log_success "Обновлён $package: $new_version"
 }
 
+# Обновить версию в README.md
+update_readme_version() {
+    local package="$1"
+    local old_version="$2"
+    local new_version="$3"
+    local readme="$REPO_ROOT/README.md"
+    
+    if $DRY_RUN; then
+        log_verbose "[DRY-RUN] Обновил бы README для $package: $old_version -> $new_version"
+        return 0
+    fi
+    
+    if [[ ! -f "$readme" ]]; then
+        log_warning "README.md не найден"
+        return 1
+    fi
+    
+    # Формат в таблице: | [**package**](...) | `version` | ...
+    # Экранируем специальные символы для sed
+    local old_escaped new_escaped
+    old_escaped=$(printf '%s' "$old_version" | sed 's/[.[\\/\\*^$]/\\\\&/g')
+    new_escaped=$(printf '%s' "$new_version" | sed 's/[&/\\]/\\\\&/g')
+    
+    # Обновляем версию в строке с пакетом
+    if grep -q "\[\*\*${package}\*\*\]" "$readme"; then
+        sed -i -E "s/(\[\*\*${package}\*\*\][^|]+\|[[:space:]]*)\`[^\`]+\`/\1\`${new_version}\`/" "$readme"
+        log_verbose "README обновлён для $package"
+    fi
+}
+
 # Проверить и обновить один пакет
 check_package() {
     local package="$1"
@@ -203,6 +234,7 @@ check_package() {
     
     log_warning "$package: $current_version -> $latest_version"
     update_staplerfile_version "$package" "$latest_version"
+    update_readme_version "$package" "$current_version" "$latest_version"
 }
 
 # Проверить все пакеты

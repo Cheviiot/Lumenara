@@ -5,7 +5,7 @@
 **Stapler-репозиторий с приложениями для Linux**
 
 [![Stapler](https://img.shields.io/badge/Stapler-репозиторий-blue?style=for-the-badge&logo=linux)](https://stplr.dev)
-[![Packages](https://img.shields.io/badge/пакетов-7-green?style=for-the-badge)](https://github.com/Cheviiot/Lumenara)
+[![Packages](https://img.shields.io/badge/пакетов-8-green?style=for-the-badge)](https://github.com/Cheviiot/Lumenara)
 [![License](https://img.shields.io/badge/license-Mixed-orange?style=for-the-badge)](https://github.com/Cheviiot/Lumenara)
 
 </div>
@@ -49,12 +49,18 @@ stplr install <имя_пакета>
 | [**anidesk**](https://github.com/theDesConnet/AniDesk) | `0.0.1-beta.6` | Десктоп-клиент Anixart для просмотра аниме | GPL-2.0 |
 | [**winboat**](https://github.com/TibixDev/winboat) | `0.9.0` | Запуск Windows-приложений с бесшовной интеграцией | MIT |
 
+### 🎮 Игры и Steam
+
+| Пакет | Версия | Описание | Лицензия |
+|:------|:------:|:---------|:--------:|
+| [**steamcloudfilemanager**](https://github.com/Fldicoahkiin/SteamCloudFileManager) | `1.3.4` | GUI для управления Steam Cloud хранилищем | GPL-3.0 |
+
 ### 🎨 Персонализация
 
 | Пакет | Версия | Описание | Лицензия |
 |:------|:------:|:---------|:--------:|
 | [**morewaita**](https://github.com/somepaulo/MoreWaita) | `49` | Расширенная тема иконок в стиле Adwaita для GNOME | GPL-3.0 |
-| [**adwyra**](https://github.com/cheviiot/adwyra) | `0.4.0` | Элегантный лаунчер приложений для Gnome | GPL-3.0 |
+| [**adwyra**](https://github.com/cheviiot/adwyra) | `0.5.0` | Элегантный лаунчер приложений для Gnome | GPL-3.0 |
 
 ---
 

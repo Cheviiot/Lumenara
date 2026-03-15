@@ -1,0 +1,110 @@
+#!/bin/bash
+# Staplerfile для Steam Cloud File Manager
+
+name='steamcloudfilemanager'
+version='1.3.4'
+release=1
+summary='Cross-platform GUI for Steam Cloud storage management'
+summary_ru='Кроссплатформенный GUI для управления Steam Cloud'
+desc='Steam Cloud File Manager is a cross-platform GUI tool for Steam Cloud.
+Visualizes remote storage as a file tree with download, upload, and delete
+capabilities. Features VDF parsing, batch transfers, symlink sync, and
+UFS configuration management. Built with Rust and egui.'
+desc_ru='Steam Cloud File Manager — кроссплатформенный GUI для Steam Cloud.
+Визуализирует облачное хранилище в виде дерева файлов с возможностью
+скачивания, загрузки и удаления. Поддерживает парсинг VDF, пакетную передачу,
+синхронизацию через симлинки и управление конфигурацией UFS.
+Написан на Rust с использованием egui.'
+homepage='https://github.com/Fldicoahkiin/SteamCloudFileManager'
+maintainer='Cheviiot <cheviiot@example.com>'
+architectures=('x86_64')
+license=('GPL-3.0-or-later')
+group='Games'
+
+auto_reqprov_method="dirty"
+auto_req=0
+auto_prov=0
+
+# Зависимости для запуска
+deps=(
+    'steam'
+)
+
+# Скрипты установки/удаления
+scripts=(
+    ['postinstall']='postinstall.sh'
+    ['postremove']='postremove.sh'
+)
+
+deps_debian=(
+    'libgtk-3-0'
+    'libxcb1'
+    'libxkbcommon0'
+)
+deps_ubuntu=("${deps_debian[@]}")
+deps_fedora=(
+    'gtk3'
+    'libxcb'
+    'libxkbcommon'
+)
+deps_arch=(
+    'gtk3'
+    'libxcb'
+    'libxkbcommon'
+)
+deps_altlinux=(
+    'libgtk+3'
+    'libxcb'
+    'libxkbcommon'
+)
+deps_opensuse=(
+    'gtk3'
+    'libxcb1'
+    'libxkbcommon0'
+)
+
+# Источники - используем tar.gz релиз
+sources=(
+    "https://github.com/Fldicoahkiin/SteamCloudFileManager/releases/download/v${version}/SteamCloudFileManager-${version}-linux-x86_64.tar.gz"
+)
+checksums=(
+    'SKIP'
+)
+
+# AppStream
+appstream_app_id='io.github.fldicoahkiin.steamcloudfilemanager'
+
+package() {
+    cd "${srcdir}"
+    
+    # Ищем распакованную директорию или бинарник
+    extracted_dir=$(find . -maxdepth 1 -type d -name "SteamCloudFileManager*" | head -1)
+    
+    if [[ -n "$extracted_dir" ]]; then
+        cd "$extracted_dir"
+    fi
+    
+    # Устанавливаем бинарник
+    install -Dm755 steam-cloud-file-manager "${pkgdir}/usr/bin/steam-cloud-file-manager"
+    
+    # Создаём .desktop файл
+    install -dm755 "${pkgdir}/usr/share/applications"
+    cat > "${pkgdir}/usr/share/applications/steam-cloud-file-manager.desktop" << 'EOF'
+[Desktop Entry]
+Name=Steam Cloud File Manager
+Name[ru]=Steam Cloud Менеджер файлов
+Comment=Manage Steam Cloud storage files
+Comment[ru]=Управление файлами Steam Cloud
+Exec=steam-cloud-file-manager
+Icon=steam-cloud-file-manager
+Terminal=false
+Type=Application
+Categories=Game;Utility;
+Keywords=steam;cloud;save;backup;sync;
+EOF
+
+    # Устанавливаем иконку если есть
+    if [[ -f "assets/steam_cloud.png" ]]; then
+        install -Dm644 "assets/steam_cloud.png" "${pkgdir}/usr/share/icons/hicolor/256x256/apps/steam-cloud-file-manager.png"
+    fi
+}

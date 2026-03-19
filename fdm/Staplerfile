@@ -51,9 +51,26 @@ package() {
     # Основной каталог приложения
     cp -a "${srcdir}/fdm-extracted/opt" "${pkgdir}/opt"
 
-    # Desktop файл
+    # Удаляем неиспользуемые SQL-драйверы (оставляем только libqsqlite)
+    rm -f "${pkgdir}/opt/freedownloadmanager/plugins/sqldrivers/libqsqlibase.so"
+    rm -f "${pkgdir}/opt/freedownloadmanager/plugins/sqldrivers/libqsqlmimer.so"
+    rm -f "${pkgdir}/opt/freedownloadmanager/plugins/sqldrivers/libqsqlmysql.so"
+    rm -f "${pkgdir}/opt/freedownloadmanager/plugins/sqldrivers/libqsqloci.so"
+    rm -f "${pkgdir}/opt/freedownloadmanager/plugins/sqldrivers/libqsqlodbc.so"
+    rm -f "${pkgdir}/opt/freedownloadmanager/plugins/sqldrivers/libqsqlpsql.so"
+
+    # Desktop файл с исправленными путями
     install -Dm644 "${srcdir}/fdm-extracted/usr/share/applications/freedownloadmanager.desktop" \
         "${pkgdir}/usr/share/applications/freedownloadmanager.desktop"
+    sed -i 's|Exec=/opt/freedownloadmanager/fdm|Exec=fdm %U|' \
+        "${pkgdir}/usr/share/applications/freedownloadmanager.desktop"
+    sed -i 's|Icon=/opt/freedownloadmanager/icon.png|Icon=freedownloadmanager|' \
+        "${pkgdir}/usr/share/applications/freedownloadmanager.desktop"
+    # Регистрируем FDM как обработчик magnet-ссылок и .torrent файлов
+    if ! grep -q '^MimeType=' "${pkgdir}/usr/share/applications/freedownloadmanager.desktop"; then
+        printf '%s\n' 'MimeType=x-scheme-handler/magnet;application/x-bittorrent;' \
+            >> "${pkgdir}/usr/share/applications/freedownloadmanager.desktop"
+    fi
 
     # AppData
     install -Dm644 "${srcdir}/fdm-extracted/usr/share/appdata/freedownloadmanager.appdata.xml" \
@@ -63,9 +80,32 @@ package() {
     install -Dm644 "${srcdir}/fdm-extracted/opt/freedownloadmanager/icon.png" \
         "${pkgdir}/usr/share/icons/hicolor/256x256/apps/freedownloadmanager.png"
 
-    # Симлинк в /usr/bin
+    # Обёртка в /usr/bin — дописывает публичные трекеры к магнет-ссылкам
+    # (трекер rutracker за Cloudflare, FDM без трекеров зависит от DHT,
+    #  который при холодном старте долго раскачивается)
     mkdir -p "${pkgdir}/usr/bin"
-    ln -s /opt/freedownloadmanager/fdm "${pkgdir}/usr/bin/fdm"
+    printf '%s\n' \
+        '#!/bin/sh' \
+        '# Обёртка: дописывает публичные трекеры к магнет-ссылкам' \
+        'case "$*" in' \
+        '    *magnet:*) ;;' \
+        '    *) exec /opt/freedownloadmanager/fdm "$@" ;;' \
+        'esac' \
+        'TR="&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337%2Fannounce"' \
+        'TR="${TR}&tr=udp%3A%2F%2Fopen.stealth.si%3A80%2Fannounce"' \
+        'TR="${TR}&tr=udp%3A%2F%2Ftracker.torrent.eu.org%3A451%2Fannounce"' \
+        'TR="${TR}&tr=udp%3A%2F%2Fexodus.desync.com%3A6969%2Fannounce"' \
+        'TR="${TR}&tr=udp%3A%2F%2Fopen.demonii.com%3A1337%2Fannounce"' \
+        'total=$#; i=1' \
+        'while [ "$i" -le "$total" ]; do' \
+        '    arg="$1"; shift' \
+        '    case "$arg" in magnet:*) arg="${arg}${TR}" ;; esac' \
+        '    set -- "$@" "$arg"' \
+        '    i=$((i+1))' \
+        'done' \
+        'exec /opt/freedownloadmanager/fdm "$@"' \
+        > "${pkgdir}/usr/bin/fdm"
+    chmod 755 "${pkgdir}/usr/bin/fdm"
 }
 
 files() {

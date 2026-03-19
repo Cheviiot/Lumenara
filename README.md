@@ -85,7 +85,7 @@ stplr install <имя_пакета>
 </tr>
 <tr>
 <td><a href="https://github.com/Cheviiot/Vual"><b>vual</b></a></td>
-<td align="center"><code>0.3.0</code></td>
+<td align="center"><code>0.3.1</code></td>
 <td>Запуск Cheat Engine для Steam/Proton игр</td>
 <td align="center">GPL-3.0</td>
 </tr>

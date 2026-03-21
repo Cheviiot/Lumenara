@@ -1,5 +1,5 @@
 name='happ'
-version='2.5.2'
+version='2.6.0'
 release=1
 summary='Happ Proxy Client — GUI for xray-core'
 summary_ru='Happ Proxy Client — GUI для xray-core'

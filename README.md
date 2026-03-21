@@ -37,7 +37,7 @@ stplr install <имя_пакета>
 </tr>
 <tr>
 <td><a href="https://github.com/Happ-proxy/happ-desktop"><b>happ</b></a></td>
-<td align="center"><code>2.5.2</code></td>
+<td align="center"><code>2.6.0</code></td>
 <td>GUI для xray-core с поддержкой TUN/VPN</td>
 <td align="center">Проприетарная</td>
 </tr>

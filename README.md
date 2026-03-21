@@ -59,7 +59,7 @@ stplr install <имя_пакета>
 </tr>
 <tr>
 <td><a href="https://github.com/pol-rivero/github-desktop-plus"><b>github-plus</b></a></td>
-<td align="center"><code>3.5.7.0</code></td>
+<td align="center"><code>3.5.7.1</code></td>
 <td>Улучшенный GUI-клиент для Git с интеграцией Bitbucket/GitLab</td>
 <td align="center">MIT</td>
 </tr>

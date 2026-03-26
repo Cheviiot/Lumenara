@@ -3,10 +3,10 @@
 [0;34m[INFO][0m Проверка версий пакетов...
 
 [0;34m[DEBUG][0m Проверка пакета: github-plus (pol-rivero/github-desktop-plus)
-[0;34m[DEBUG][0m github-plus: текущая=3.5.7.0, последняя=3.5.7.1 (raw: v3.5.7.1)
-[1;33m[WARN][0m github-plus: 3.5.7.0 -> 3.5.7.1
-[0;34m[INFO][0m [DRY-RUN] Обновил бы github-plus до версии 3.5.7.1
-[0;34m[DEBUG][0m [DRY-RUN] Обновил бы README для github-plus: 3.5.7.0 -> 3.5.7.1
+[0;34m[DEBUG][0m github-plus: текущая=3.5.7.1, последняя=3.5.7.2 (raw: v3.5.7.2)
+[1;33m[WARN][0m github-plus: 3.5.7.1 -> 3.5.7.2
+[0;34m[INFO][0m [DRY-RUN] Обновил бы github-plus до версии 3.5.7.2
+[0;34m[DEBUG][0m [DRY-RUN] Обновил бы README для github-plus: 3.5.7.1 -> 3.5.7.2
 [0;34m[DEBUG][0m Проверка пакета: vual (Cheviiot/Vual)
 [0;34m[DEBUG][0m vual: текущая=0.3.1, последняя=0.3.1 (raw: v0.3.1)
 [0;32m[OK][0m vual: актуальная версия (0.3.1)
@@ -14,9 +14,11 @@
 [0;34m[DEBUG][0m adwyra: текущая=0.5.0, последняя=0.5.0 (raw: v0.5.0)
 [0;32m[OK][0m adwyra: актуальная версия (0.5.0)
 [0;34m[DEBUG][0m Проверка пакета: kitsune (alt-gnome/Kitsune)
-[0;34m[DEBUG][0m kitsune: текущая=0.8.3, последняя=0.8.3 (raw: 0.8.3)
-[0;32m[OK][0m kitsune: актуальная версия (0.8.3)
+[0;34m[DEBUG][0m kitsune: текущая=0.8.3, последняя=0.8.4 (raw: 0.8.4)
+[1;33m[WARN][0m kitsune: 0.8.3 -> 0.8.4
+[0;34m[INFO][0m [DRY-RUN] Обновил бы kitsune до версии 0.8.4
+[0;34m[DEBUG][0m [DRY-RUN] Обновил бы README для kitsune: 0.8.3 -> 0.8.4
 [0;34m[DEBUG][0m Проверка пакета: happ (Happ-proxy/happ-desktop)
-[0;34m[DEBUG][0m happ: текущая=2.5.2, последняя=2.5.2 (raw: 2.5.2)
-[0;32m[OK][0m happ: актуальная версия (2.5.2)
+[0;34m[DEBUG][0m happ: текущая=2.6.0, последняя=2.6.0 (raw: 2.6.0)
+[0;32m[OK][0m happ: актуальная версия (2.6.0)
 

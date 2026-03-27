@@ -1,5 +1,5 @@
 name='kitsune'
-version='0.8.4'
+version='0.8.5'
 release=1
 summary='Libadwaita client for watching anime from AniLiberty'
 summary_ru='Libadwaita-клиент для просмотра аниме от AniLiberty'

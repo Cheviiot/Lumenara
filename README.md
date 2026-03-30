@@ -59,21 +59,6 @@ stplr install <имя_пакета>
 </tr>
 </table>
 
-<table>
-<tr><td colspan="4"><h4>🎬 Медиа и развлечения</h4></td></tr>
-<tr>
-<th align="left">Пакет</th>
-<th align="center">Версия</th>
-<th align="left">Описание</th>
-<th align="center">Лицензия</th>
-</tr>
-<tr>
-<td><a href="https://altlinux.space/alt-gnome/Kitsune"><b>kitsune</b></a></td>
-<td align="center"><code>0.8.5</code></td>
-<td>Libadwaita-клиент для просмотра аниме от AniLiberty</td>
-<td align="center">GPL-3.0</td>
-</tr>
-</table>
 
 <table>
 <tr><td colspan="4"><h4>🎮 Игры и Steam</h4></td></tr>

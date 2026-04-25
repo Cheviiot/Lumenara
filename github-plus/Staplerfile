@@ -1,6 +1,6 @@
 name='github-plus'
-version='3.5.7.2'
-release=1
+version='3.5.9.0'
+release=2
 summary='GitHub Desktop Plus — enhanced GUI client for Git'
 summary_ru='GitHub Desktop Plus — улучшенный GUI-клиент для Git'
 group='Development/Tools'
@@ -25,25 +25,16 @@ deps_arch=('glibc' 'gtk3' 'libnotify' 'nss' 'libxss' 'libxtst' 'xdg-utils' 'libs
 deps_opensuse=('glibc' 'gtk3' 'libnotify4' 'mozilla-nss' 'libXScrnSaver1' 'libXtst6' 'xdg-utils' 'libsecret-1-0' 'libcurl4')
 deps_altlinux=('glibc' 'libgtk+3' 'libnotify' 'libnss' 'libXScrnSaver' 'libXtst' 'xdg-utils' 'libsecret' 'libcurl-gnutls-compat')
 
+# Один .deb: внутри уже Icon=github-desktop-plus, иконки hicolor, .desktop + MimeType для OAuth
 sources=(
     "https://github.com/pol-rivero/github-desktop-plus/releases/download/v${version}/GitHubDesktopPlus-v${version}-linux-x86_64.deb?~archive=false&~name=github-desktop-plus.deb"
-    "https://raw.githubusercontent.com/pol-rivero/github-desktop-plus/main/app/static/linux/logos/32x32.png?~name=icon-32.png"
-    "https://raw.githubusercontent.com/pol-rivero/github-desktop-plus/main/app/static/linux/logos/64x64.png?~name=icon-64.png"
-    "https://raw.githubusercontent.com/pol-rivero/github-desktop-plus/main/app/static/linux/logos/128x128.png?~name=icon-128.png"
-    "https://raw.githubusercontent.com/pol-rivero/github-desktop-plus/main/app/static/linux/logos/256x256.png?~name=icon-256.png"
-    "https://raw.githubusercontent.com/pol-rivero/github-desktop-plus/main/app/static/linux/logos/512x512.png?~name=icon-512.png"
 )
 
 sources_arm64=(
     "https://github.com/pol-rivero/github-desktop-plus/releases/download/v${version}/GitHubDesktopPlus-v${version}-linux-arm64.deb?~archive=false&~name=github-desktop-plus.deb"
-    "https://raw.githubusercontent.com/pol-rivero/github-desktop-plus/main/app/static/linux/logos/32x32.png?~name=icon-32.png"
-    "https://raw.githubusercontent.com/pol-rivero/github-desktop-plus/main/app/static/linux/logos/64x64.png?~name=icon-64.png"
-    "https://raw.githubusercontent.com/pol-rivero/github-desktop-plus/main/app/static/linux/logos/128x128.png?~name=icon-128.png"
-    "https://raw.githubusercontent.com/pol-rivero/github-desktop-plus/main/app/static/linux/logos/256x256.png?~name=icon-256.png"
-    "https://raw.githubusercontent.com/pol-rivero/github-desktop-plus/main/app/static/linux/logos/512x512.png?~name=icon-512.png"
 )
 
-checksums=('SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP')
+checksums=('SKIP')
 
 scripts=(
     ['postinstall']='postinstall.sh'
@@ -57,13 +48,9 @@ package() {
     ar x github-desktop-plus.deb
     tar -xf data.tar.* -C "${srcdir}/extracted"
 
+    # Всё из upstream .deb: бинарник, /usr/lib/github-desktop-plus, .desktop, github-desktop-plus.png
+    # (раньше в files() попадали только иконки github-plus.png, не совпадающие с Icon= в .desktop)
     cp -a "${srcdir}/extracted/usr" "${pkgdir}/usr"
-
-    # Иконки
-    for size in 32 64 128 256 512; do
-        install -Dm644 "${srcdir}/icon-${size}.png" \
-            "${pkgdir}/usr/share/icons/hicolor/${size}x${size}/apps/github-plus.png"
-    done
 }
 
 files() {
@@ -71,9 +58,10 @@ files() {
         "/usr/bin/github-desktop-plus" \
         "/usr/lib/github-desktop-plus/**/*" \
         "/usr/share/applications/github-desktop-plus.desktop" \
-        "/usr/share/icons/hicolor/32x32/apps/github-plus.png" \
-        "/usr/share/icons/hicolor/64x64/apps/github-plus.png" \
-        "/usr/share/icons/hicolor/128x128/apps/github-plus.png" \
-        "/usr/share/icons/hicolor/256x256/apps/github-plus.png" \
-        "/usr/share/icons/hicolor/512x512/apps/github-plus.png"
+        "/usr/share/icons/hicolor/32x32/apps/github-desktop-plus.png" \
+        "/usr/share/icons/hicolor/64x64/apps/github-desktop-plus.png" \
+        "/usr/share/icons/hicolor/128x128/apps/github-desktop-plus.png" \
+        "/usr/share/icons/hicolor/256x256/apps/github-desktop-plus.png" \
+        "/usr/share/icons/hicolor/512x512/apps/github-desktop-plus.png" \
+        "/usr/share/icons/hicolor/1024x1024/apps/github-desktop-plus.png"
 }

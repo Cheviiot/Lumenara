@@ -32,6 +32,9 @@ declare -A VERSION_TRANSFORMS=(
 # Пакеты с определением версии через redirect URL загрузки
 declare -A PACKAGE_REDIRECT_URL=()
 
+# Опционально: Gitea вместо GitHub (URL инстанса)
+declare -A PACKAGE_GITEA=()
+
 # Флаги
 DRY_RUN=false
 VERBOSE=false
@@ -81,6 +84,15 @@ log_verbose() {
     fi
 }
 
+# GET к api.github.com (в GITHUB Actions переменная GITHUB_TOKEN уже есть — выше лимит API)
+_curl_github_api() {
+    local hdr=(-H "Accept: application/vnd.github+json" -H "X-GitHub-Api-Version: 2022-11-28")
+    if [[ -n "${GITHUB_TOKEN:-}" ]]; then
+        hdr+=(-H "Authorization: Bearer ${GITHUB_TOKEN}")
+    fi
+    curl -sL "${hdr[@]}" "$@"
+}
+
 # Получить последнюю версию с GitHub или Gitea
 get_latest_version() {
     local repo="$1"
@@ -89,10 +101,10 @@ get_latest_version() {
     local api_response
     
     # Проверяем, использует ли пакет определение версии через redirect URL
-    if [[ -n "${PACKAGE_REDIRECT_URL[$package]:-}" ]]; then
+    if [[ -n "${PACKAGE_REDIRECT_URL["$package"]:+x}" ]]; then
         local redirect_url
         redirect_url=$(curl -sI -o /dev/null -w '%{redirect_url}' \
-            "${PACKAGE_REDIRECT_URL[$package]}" 2>/dev/null)
+            "${PACKAGE_REDIRECT_URL["$package"]}" 2>/dev/null)
         # Извлекаем версию из redirect URL (например .../linux/x64/11.10.0/...)
         version=$(echo "$redirect_url" | grep -oP '/\d+\.\d+\.\d+/' | tr -d '/')
         echo "$version"
@@ -100,8 +112,8 @@ get_latest_version() {
     fi
 
     # Проверяем, является ли пакет Gitea-хостингом
-    if [[ -n "${PACKAGE_GITEA[$package]:-}" ]]; then
-        local gitea_url="${PACKAGE_GITEA[$package]}"
+    if [[ -n "${PACKAGE_GITEA["$package"]:+x}" ]]; then
+        local gitea_url="${PACKAGE_GITEA["$package"]}"
         
         # Gitea API: сначала пробуем tags (более надежно)
         api_response=$(curl -sL \
@@ -114,19 +126,13 @@ get_latest_version() {
     fi
     
     # Используем GitHub API для получения последнего релиза
-    api_response=$(curl -sL \
-        -H "Accept: application/vnd.github+json" \
-        "https://api.github.com/repos/$repo/releases/latest" \
-        2>/dev/null)
+    api_response=$(_curl_github_api "https://api.github.com/repos/${repo}/releases/latest")
     
     version=$(echo "$api_response" | jq -r '.tag_name // empty' 2>/dev/null)
     
     # Если releases пусто, пробуем tags
     if [[ -z "$version" ]]; then
-        api_response=$(curl -sL \
-            -H "Accept: application/vnd.github+json" \
-            "https://api.github.com/repos/$repo/tags" \
-            2>/dev/null)
+        api_response=$(_curl_github_api "https://api.github.com/repos/${repo}/tags")
         version=$(echo "$api_response" | jq -r '.[0].name // empty' 2>/dev/null)
     fi
     
@@ -145,8 +151,8 @@ transform_version() {
     local version="$2"
     local result
     
-    if [[ -n "${VERSION_TRANSFORMS[$package]:-}" ]]; then
-        local transform="${VERSION_TRANSFORMS[$package]}"
+    if [[ -n "${VERSION_TRANSFORMS["$package"]:+x}" ]]; then
+        local transform="${VERSION_TRANSFORMS["$package"]}"
         result=$("$transform" "$version")
     else
         # По умолчанию просто убираем 'v' в начале
@@ -223,14 +229,14 @@ update_readme_version() {
 # Проверить и обновить один пакет
 check_package() {
     local package="$1"
-    local repo="${PACKAGE_REPOS[$package]:-}"
+    local repo="${PACKAGE_REPOS["$package"]:-}"
     
     if [[ -z "$repo" ]]; then
         log_error "Неизвестный пакет: $package"
         return 1
     fi
     
-    log_verbose "Проверка пакета: $package (${PACKAGE_REDIRECT_URL[$package]:-$repo})"
+    log_verbose "Проверка пакета: $package (${PACKAGE_REDIRECT_URL["$package"]:-$repo})"
     
     local current_version
     current_version=$(get_current_version "$package") || return 1
@@ -266,7 +272,13 @@ check_all_packages() {
     log_info "Проверка версий пакетов..."
     echo ""
     
+    local _first_pkg=true
     for package in "${!PACKAGE_REPOS[@]}"; do
+        if ! $_first_pkg; then
+            # снижает риск secondary rate limit GitHub API (без токена ~60 зпр/ч)
+            sleep 2
+        fi
+        _first_pkg=false
         check_package "$package" || true
     done
     

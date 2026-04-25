@@ -6,6 +6,7 @@ url = "https://github.com/Cheviiot/Luma.git"
 ref = "main"
 
 [repo.meta]
+version = "0.2.0"
 report_url = "https://github.com/Cheviiot/Luma/issues"
 title = "Luma"
 homepage = "https://github.com/Cheviiot/Luma"

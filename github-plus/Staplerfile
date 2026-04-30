@@ -1,5 +1,5 @@
 name='github-plus'
-version='3.5.9.0'
+version='3.5.9.1'
 release=2
 summary='GitHub Desktop Plus — enhanced GUI client for Git'
 summary_ru='GitHub Desktop Plus — улучшенный GUI-клиент для Git'
